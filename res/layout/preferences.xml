@@ -1,0 +1,18 @@
+<PreferenceScreen  
+   xmlns:android="http://schemas.android.com/apk/res/android">
+   <ListPreference
+	  android:title="Action"
+      android:summary="What to do"
+      android:key="action"
+      android:defaultValue="datasync"
+      android:entries="@array/mode_labels"
+      android:entryValues="@array/mode_values" />
+      
+  <ListPreference
+	  android:title="Trigger"
+      android:summary="When to do it"
+      android:key="trigger"
+      android:defaultValue="desk_dock"
+      android:entries="@array/trigger_labels"
+      android:entryValues="@array/trigger_values" />
+</PreferenceScreen>

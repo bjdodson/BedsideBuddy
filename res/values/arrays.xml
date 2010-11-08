@@ -1,0 +1,22 @@
+<resources>
+
+  <string-array name="mode_values">
+    <item>airplane</item>
+    <item>datasync</item>
+    <item>nothing</item>
+  </string-array>
+  <string-array name="mode_labels">
+    <item>Toggle airplane mode</item>
+    <item>Toggle data sync</item>
+    <item>Do nothing</item>
+  </string-array>
+  <string-array name="trigger_values">
+    <item>power</item>
+    <item>desk_dock</item>
+  </string-array>
+    <string-array name="trigger_labels">
+    <item>On A/C power</item>
+    <item>When docked</item>
+  </string-array>
+  
+</resources>
