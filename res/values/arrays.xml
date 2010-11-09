@@ -19,4 +19,15 @@
     <item>When docked</item>
   </string-array>
   
+    <string-array name="condition_values">
+    <item>always</item>
+    <item>only</item>
+    <item>except</item>
+  </string-array>
+    <string-array name="condition_labels">
+    <item>Always</item>
+    <item>Only between</item>
+    <item>Except between</item>
+  </string-array>
+  
 </resources>

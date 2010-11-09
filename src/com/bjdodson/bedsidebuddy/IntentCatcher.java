@@ -1,21 +1,32 @@
 package com.bjdodson.bedsidebuddy;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Map;
+
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
+import android.preference.Preference;
+import android.preference.TimePickerPreference;
 import android.provider.Settings;
 import android.util.Log;
 
 public class IntentCatcher extends BroadcastReceiver {
+	SharedPreferences prefs;
+	Context context;
+	
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		SharedPreferences prefs = context.getSharedPreferences("main", 0);
+		prefs = context.getSharedPreferences("main", 0);
+		this.context = context;
+		
 		String action = prefs.getString("action", "nothing");
 		String trigger = prefs.getString("trigger", "nothing");
-		
+
 		if ("nothing".equals(action)){
 			return;
 		}
@@ -25,7 +36,7 @@ public class IntentCatcher extends BroadcastReceiver {
 		if ("desk_dock".equals(trigger)) {
 			if (Intent.ACTION_DOCK_EVENT.equals(event)) {
 				int mode = intent.getIntExtra(Intent.EXTRA_DOCK_STATE, -1);
-				if (mode == Intent.EXTRA_DOCK_STATE_DESK) {
+				if (mode == Intent.EXTRA_DOCK_STATE_DESK && timeConditionHolds()) {
 					dataOff(context, action);
 				} else if (mode == Intent.EXTRA_DOCK_STATE_UNDOCKED) {
 					dataOn(context, action);
@@ -34,7 +45,7 @@ public class IntentCatcher extends BroadcastReceiver {
 		}
 		
 		if ("power".equals(trigger)) {
-			if (Intent.ACTION_POWER_CONNECTED.equals(event)) {
+			if (Intent.ACTION_POWER_CONNECTED.equals(event) && timeConditionHolds()) {
 				dataOff(context, action);
 			} else if (Intent.ACTION_POWER_DISCONNECTED.equals(event)) {
 				dataOn(context, action);
@@ -102,5 +113,49 @@ public class IntentCatcher extends BroadcastReceiver {
         Intent intent = new Intent(Intent.ACTION_AIRPLANE_MODE_CHANGED);
         intent.putExtra("state", enabling);
         context.sendBroadcast(intent);
+    }
+    
+    /**
+     * Verifies that the time is within the user's specified bound.
+     * @return
+     */
+    private boolean timeConditionHolds() {
+    	String condition = prefs.getString("condition", "always");
+    	if (condition.equals("always")) {
+    		return true;
+    	}
+    	
+    	Calendar current = Calendar.getInstance();
+    	int curMins = current.get(Calendar.HOUR_OF_DAY)*60 + current.get(Calendar.MINUTE);
+    	
+    	String start = prefs.getString("starttime", null);
+    	String end = prefs.getString("endtime", null);
+    	if (start == null || end == null) {
+    		return true;
+    	}
+    	
+    	int startMins = timeInMinutes(start);
+    	int endMins = timeInMinutes(end);
+    	
+    	
+    	if (startMins < endMins) {
+    		// standard stuff.
+    		boolean between = (curMins >= startMins && curMins <= endMins);
+    		return (between ^ condition.equals("except"));
+    	} else {
+    		boolean between = (curMins >= endMins && curMins <= startMins);
+    		return (between ^ condition.equals("only"));
+    	}
+    }
+    
+    /**
+     * Returns the number of minutes since 12AM.
+     * @param rep
+     * @return
+     */
+    private int timeInMinutes(String time) {
+    	int t = 60 * Integer.valueOf(time.split(":")[0]);
+    	t += Integer.valueOf(time.split(":")[1]);
+    	return t;
     }
 }

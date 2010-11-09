@@ -15,4 +15,26 @@
       android:defaultValue="desk_dock"
       android:entries="@array/trigger_labels"
       android:entryValues="@array/trigger_values" />
+      
+    <PreferenceScreen android:key="condition_screen"
+    				  android:title="Condition"
+    				  android:summary="When not to do it">
+    				  
+ 	    <ListPreference
+		  android:title="Condition"
+	      android:key="condition"
+	      android:defaultValue="except"
+	      android:entries="@array/condition_labels"
+	      android:entryValues="@array/condition_values" />
+      
+    	<TimePickerPreference
+    	    android:title="Start time"
+    	    android:summary="Starting time"
+    	    android:key="starttime" />
+    	    
+    	    <TimePickerPreference
+    	    android:title="End time"
+    	    android:summary="Ending time. Before 'Start time' means next day."
+    	    android:key="endtime" />
+    </PreferenceScreen>
 </PreferenceScreen>
