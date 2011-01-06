@@ -4,6 +4,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 
+import android.app.AlarmManager;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -18,6 +19,9 @@ import android.util.Log;
 public class IntentCatcher extends BroadcastReceiver {
 	SharedPreferences prefs;
 	Context context;
+	
+	public static String ACTION_START_TIME = "START_TIMER";
+	public static String ACTION_STOP_TIME = "STOP_TIMER";
 	
 	@Override
 	public void onReceive(Context context, Intent intent) {
@@ -51,6 +55,28 @@ public class IntentCatcher extends BroadcastReceiver {
 				dataOn(context, action);
 			}
 		}
+		
+		if ("time_event".equals(trigger)) {
+			if (ACTION_START_TIME.equals(event)) {
+				dataOff(context, action);
+				refreshTimers(context);
+			} else if (ACTION_STOP_TIME.equals(event)) {
+				dataOn(context, action);
+				refreshTimers(context);
+			}
+		}
+	}
+	
+	private void refreshTimers(Context context) {
+		String startTimeString = prefs.getString("starttime", null);
+    	String endTimeString = prefs.getString("endtime", null);
+    	if (startTimeString == null || endTimeString == null) {
+    		return;
+    	}
+    	
+		AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+		alarmManager.set(AlarmManager.RTC_WAKEUP, BedsideBuddy.stringTimeToMs(startTimeString), BedsideBuddy.getStartTimeIntent(context));
+    	alarmManager.set(AlarmManager.RTC_WAKEUP, BedsideBuddy.stringTimeToMs(endTimeString), BedsideBuddy.getStopTimeIntent(context));
 	}
 	
 	private void dataOff(Context context, String action) {

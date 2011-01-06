@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="com.bjdodson.bedsidebuddy"
-      android:versionCode="2"
-      android:versionName="1.0.5">
+      android:versionCode="4"
+      android:versionName="1.1.2">
     <application android:icon="@drawable/sheep_icon" android:label="@string/app_name">
         <activity android:name=".BedsideBuddy"
                   android:label="@string/app_name">
@@ -11,7 +11,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        
+        <receiver android:name=".BootEventReceiver">
+        	<intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
         <receiver android:name=".IntentCatcher">
             <intent-filter>
                 <action android:name="android.intent.action.DOCK_EVENT" />
@@ -30,7 +34,8 @@
     </application>
     <uses-sdk android:minSdkVersion="5" />
 
-<uses-permission android:name="android.permission.READ_SYNC_SETTINGS"></uses-permission>
-<uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS"></uses-permission>
-<uses-permission android:name="android.permission.WRITE_SETTINGS"></uses-permission>
+	<uses-permission android:name="android.permission.READ_SYNC_SETTINGS"></uses-permission>
+	<uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS"></uses-permission>
+	<uses-permission android:name="android.permission.WRITE_SETTINGS"></uses-permission>
+	<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"></uses-permission>
 </manifest> 
